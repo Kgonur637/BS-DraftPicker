@@ -6,5 +6,5 @@ This program has a list of Python library requirements, but on top of that you w
 https://tesseract-ocr.github.io/tessdoc/Installation.html
 You will also need to add this to your path.
 I'm not smart enough to explain how to do this so just look up "Adding Tesseract OCR to Path". 
-Please don't use automatic calibration, 99% of the time won't work. 
-Note that this program has only been tested on Windows machines. I have no idea how to make them work on MacOS. I'm sure if you use Linux you don't need this program. 
+Note that this program has only been tested on Windows machines, as one of the libraries is windows only. 
+You will also need to create a folder with the draft images in them, and name it "SpenLC" (or change that name in the code). Place this folder in the same location as the python program. 
