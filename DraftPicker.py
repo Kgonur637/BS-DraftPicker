@@ -10,6 +10,7 @@ from PIL import Image
 import math
 import win32.lib.win32con as win32con
 import nltk
+import pickle
 
 #tells code where to find Tessaract program, if your drive isn't C this needs to be changed.
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract"
@@ -20,7 +21,7 @@ pagename = input("Please type in the name of the application that the screenshar
 if pagename =="":
     pagename = "SM-G990U1"
 hwnd = win32gui.FindWindow(None,pagename)
-calibrationval = input("Type Y and hit enter to calibrate manually. Type anything else to test auto calibration (not reccomended).\n")
+calibrationval = input("Type Y and hit enter for calibration(first time users or changed setup).\nHit enter if you have previously calibrated the program.\n")
 
 #inital variables needed for calibration to work
 calibrated = "s"
@@ -54,16 +55,18 @@ if calibrationval == "y":
                 time.sleep(5)
                 calibrated = input("Type in Y if you are able to read the entire map name and there is empty space at the end of the box. \nTo see the screenshot again type S. \nIf you are unable to read the screenshot, hit enter.\n")
                 calibrated = calibrated.lower()
+
+            with open("variables.pkl", "wb") as file:
+                pickle.dump([x,y,width,height,checkx,checky], file)
         except:
-            print("Something went wrong, please try again!\n")
-            time.sleep(5)
+            valuenotneeded = input("Something went wrong, hit the enter key to try again!\n")
             continue
 
-#auto calibration (calibrated to 1920*1080 and using scrcpy on full screen with Galaxy S21 FE)
+#reading saved values
 else:
-    x,y = int(0.09375*resx),int(0.157407407*resy)
-    width,height = int(0.114583333*resx), int(0.0277777778*resy)
-    checkx, checky= int(0.403125*resx), int(0.114814815*resy)
+    with open("variables.pkl", "rb") as file:
+        x,y,width,height,checkx,checky = pickle.load(file)
+
 
 #more variables needed for program
 extra = ["[","]","|"," ","{","}","(",")","'",";",":",".",",","?","!","\\","/","\""]
@@ -160,12 +163,13 @@ while True:
                break
            try:
                #protocol that adjusts for slight misreads by tessaract OCR
-               print("Engaging Levenshtein protocol")
+               print("Engaging Levenshtein protocol\n")
                for z in file_names:
                    for d in file_type:
                        c = z.replace(d, "")
                    similar = nltk.edit_distance(names, c)
-                   if similar < 5:
+                   if similar < 7\
+                           :
                        print_image(z)
                        found = True
                        break
